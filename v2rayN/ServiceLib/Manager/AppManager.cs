@@ -109,6 +109,8 @@ public sealed class AppManager
             await MigrateProfileExtra();
         }).Wait();
 
+        PowerResumeManager.Instance.Init();
+
         return true;
     }
 

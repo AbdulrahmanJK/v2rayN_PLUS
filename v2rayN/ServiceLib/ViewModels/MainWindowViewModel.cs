@@ -264,6 +264,18 @@ public partial class MainWindowViewModel : MyReactiveObject
             .ObserveOn(RxSchedulers.MainThreadScheduler)
             .Subscribe(bl => BlNewUpdate = bl);
 
+        AppEvents.SystemResumeRequested
+            .AsObservable()
+            .ObserveOn(RxSchedulers.MainThreadScheduler)
+            .SubscribeAsync(async _ =>
+            {
+                if (CoreManager.Instance.HasRunningCore)
+                {
+                    Logging.SaveLog("MainWindowViewModel - SystemResumeRequested received, reloading core...");
+                    await Reload();
+                }
+            });
+
         #endregion AppEvents
 
         ProfilesViewModel.RefreshServersRequested

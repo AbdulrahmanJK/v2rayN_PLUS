@@ -14,4 +14,5 @@ public static class AppEvents
     public static readonly EventChannel<bool> ShutdownRequested = new();
 
     public static readonly EventChannel<ESysProxyType> SysProxyChangeRequested = new();
+    public static readonly EventChannel<RxVoid> SystemResumeRequested = new();
 }
