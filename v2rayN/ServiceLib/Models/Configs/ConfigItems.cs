@@ -75,6 +75,9 @@ public class GUIItem
     public bool EnableHWA { get; set; } = false;
     public bool EnableLog { get; set; } = true;
     public string? RootCertProvider { get; set; }
+    public bool EnableHwid { get; set; } = true;
+    public string? Hwid { get; set; }
+    public bool SendDeviceModel { get; set; } = true;
 }
 
 [Serializable]

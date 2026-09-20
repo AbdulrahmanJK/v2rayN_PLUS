@@ -31,7 +31,7 @@ public static class SubscriptionHandler
                 }
 
                 // Create download handler
-                var downloadHandle = CreateDownloadHandler(item, hashCode, updateFunc);
+                var downloadHandle = CreateDownloadHandler(config, item, hashCode, updateFunc);
                 await updateFunc?.Invoke(false, $"{hashCode}{ResUI.MsgStartGettingSubscriptions}");
 
                 // Get all subscription content (main subscription + additional subscriptions)
@@ -80,12 +80,9 @@ public static class SubscriptionHandler
         return true;
     }
 
-    private static DownloadService CreateDownloadHandler(SubItem item, string hashCode, Func<bool, string, Task> updateFunc)
+    private static DownloadService CreateDownloadHandler(Config config, SubItem item, string hashCode, Func<bool, string, Task> updateFunc)
     {
-        if (!HttpRequestHeadersHelper.TryParse(item.RequestHeaders, out var requestHeaders))
-        {
-            throw new FormatException(ResUI.SubRequestHeadersInvalid);
-        }
+        var requestHeaders = HwidHelper.BuildSubscriptionHeaders(config, item);
 
         var downloadHandle = new DownloadService
         {
@@ -120,7 +117,7 @@ public static class SubscriptionHandler
         // Process additional subscription links (if any)
         if (item.ConvertTarget.IsNullOrEmpty() && item.MoreUrl.TrimEx().IsNotEmpty())
         {
-            result = await DownloadAdditionalSubscriptions(item, result, blProxy, downloadHandle);
+            result = await DownloadAdditionalSubscriptions(config, item, result, blProxy, downloadHandle);
         }
 
         return result;
@@ -129,7 +126,9 @@ public static class SubscriptionHandler
     private static async Task<string> DownloadMainSubscription(Config config, SubItem item, bool blProxy, DownloadService downloadHandle)
     {
         // Prepare subscription URL and download directly
+        var effectiveHwid = HwidHelper.GetEffectiveHwid(config, item);
         var url = Utils.GetPunycode(item.Url.TrimEx());
+        url = HwidHelper.ApplyHwidMacro(url, effectiveHwid);
 
         // If conversion is needed
         if (item.ConvertTarget.IsNotEmpty())
@@ -152,10 +151,24 @@ public static class SubscriptionHandler
         }
 
         // Download and return result directly
-        return await DownloadSubscriptionContent(downloadHandle, url, blProxy, item.UserAgent);
+        var userAgent = GetEffectiveUserAgent(item, url);
+        return await DownloadSubscriptionContent(downloadHandle, url, blProxy, userAgent);
     }
 
-    private static async Task<string> DownloadAdditionalSubscriptions(SubItem item, string mainResult, bool blProxy, DownloadService downloadHandle)
+    private static string GetEffectiveUserAgent(SubItem item, string url)
+    {
+        if (item.UserAgent.IsNotEmpty())
+        {
+            return item.UserAgent;
+        }
+        if (HwidHelper.IsHappSubscription(url, item.UserAgent))
+        {
+            return HwidHelper.GetHappUserAgent();
+        }
+        return string.Empty;
+    }
+
+    private static async Task<string> DownloadAdditionalSubscriptions(Config config, SubItem item, string mainResult, bool blProxy, DownloadService downloadHandle)
     {
         var result = mainResult;
 
@@ -164,6 +177,8 @@ public static class SubscriptionHandler
         {
             result = Utils.Base64Decode(result);
         }
+
+        var effectiveHwid = HwidHelper.GetEffectiveHwid(config, item);
 
         // Process additional URL list
         var lstUrl = item.MoreUrl.TrimEx().Split(",") ?? [];
@@ -175,7 +190,10 @@ public static class SubscriptionHandler
                 continue;
             }
 
-            var additionalResult = await DownloadSubscriptionContent(downloadHandle, url2, blProxy, item.UserAgent);
+            url2 = HwidHelper.ApplyHwidMacro(url2, effectiveHwid);
+
+            var userAgent = GetEffectiveUserAgent(item, url2);
+            var additionalResult = await DownloadSubscriptionContent(downloadHandle, url2, blProxy, userAgent);
 
             if (additionalResult.IsNotEmpty())
             {

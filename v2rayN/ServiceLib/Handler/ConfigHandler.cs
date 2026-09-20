@@ -99,6 +99,10 @@ public static class ConfigHandler
         {
             config.GuiItem.RootCertProvider = Global.RootCertProviders.First();
         }
+        if (config.GuiItem.Hwid.IsNullOrEmpty())
+        {
+            config.GuiItem.Hwid = HwidHelper.GenerateHappHwid();
+        }
         config.MsgUIItem ??= new();
 
         config.UiItem ??= new();

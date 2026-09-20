@@ -223,6 +223,10 @@ public class DownloadService
             {
                 Error?.Invoke(this, new ErrorEventArgs(ex.InnerException));
             }
+            if (ex.Message == ResUI.MsgHwidRequired || ex.Message == ResUI.MsgHwidMaxDevicesReached)
+            {
+                return null;
+            }
         }
 
         try
@@ -278,7 +282,11 @@ public class DownloadService
             {
                 userAgent = Utils.GetVersion(false);
             }
-            client.DefaultRequestHeaders.UserAgent.TryParseAdd(userAgent);
+            if (!client.DefaultRequestHeaders.UserAgent.TryParseAdd(userAgent))
+            {
+                client.DefaultRequestHeaders.Remove("User-Agent");
+                client.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", userAgent);
+            }
             if (AcceptHeader.IsNotEmpty())
             {
                 client.DefaultRequestHeaders.Accept.ParseAdd(AcceptHeader);
@@ -295,7 +303,23 @@ public class DownloadService
             timeoutCts.CancelAfter(webProxy is null ? Global.DirectFetch : Global.ProxyFetch);
             using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutCts.Token);
 
-            return await client.GetStringAsync(url, linkedCts.Token);
+            using var response = await client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, linkedCts.Token);
+            if (!response.IsSuccessStatusCode)
+            {
+                if (response.Headers.TryGetValues("x-hwid-not-supported", out _))
+                {
+                    throw new HttpRequestException(ResUI.MsgHwidRequired);
+                }
+                if (response.Headers.TryGetValues("x-hwid-max-devices-reached", out _)
+                    || response.Headers.TryGetValues("x-hwid-limit", out var limitVals) && limitVals.Contains("true"))
+                {
+                    throw new HttpRequestException(ResUI.MsgHwidMaxDevicesReached);
+                }
+
+                response.EnsureSuccessStatusCode();
+            }
+
+            return await response.Content.ReadAsStringAsync(linkedCts.Token);
         }
         catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
         {
