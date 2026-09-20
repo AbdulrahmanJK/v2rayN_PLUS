@@ -549,7 +549,7 @@
                     <Grid
                         Margin="{StaticResource Margin4}"
                         ColumnDefinitions="Auto,Auto,*"
-                        RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
+                        RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
 
                         <TextBlock
                             x:Name="tbAutoRun"
@@ -927,6 +927,62 @@
                             VerticalAlignment="Center"
                             Text="{x:Static resx:ResUI.TbSettingsChinaUserTip}"
                             TextWrapping="Wrap" />
+
+                        <TextBlock
+                            Grid.Row="28"
+                            Grid.Column="0"
+                            Margin="{StaticResource Margin4}"
+                            VerticalAlignment="Center"
+                            Text="{x:Static resx:ResUI.TbSettingsEnableHwid}" />
+                        <ToggleSwitch
+                            x:Name="togEnableHwid"
+                            Grid.Row="28"
+                            Grid.Column="1"
+                            Margin="{StaticResource Margin4}"
+                            HorizontalAlignment="Left" />
+
+                        <TextBlock
+                            Grid.Row="29"
+                            Grid.Column="0"
+                            Margin="{StaticResource Margin4}"
+                            VerticalAlignment="Center"
+                            Text="{x:Static resx:ResUI.TbSettingsHwid}" />
+                        <StackPanel
+                            Grid.Row="29"
+                            Grid.Column="1"
+                            Orientation="Horizontal"
+                            Margin="{StaticResource Margin4}">
+                            <TextBox
+                                x:Name="txtHwid"
+                                Width="280"
+                                Margin="{StaticResource Margin4}"
+                                VerticalAlignment="Center" />
+                            <Button
+                                x:Name="btnRegenerateHwid"
+                                Margin="{StaticResource Margin4}"
+                                VerticalAlignment="Center"
+                                Content="{x:Static resx:ResUI.TbRegenerateHwid}" />
+                        </StackPanel>
+                        <TextBlock
+                            Grid.Row="29"
+                            Grid.Column="2"
+                            Margin="{StaticResource Margin4}"
+                            VerticalAlignment="Center"
+                            Text="{x:Static resx:ResUI.TbSettingsHwidTips}"
+                            TextWrapping="Wrap" />
+
+                        <TextBlock
+                            Grid.Row="30"
+                            Grid.Column="0"
+                            Margin="{StaticResource Margin4}"
+                            VerticalAlignment="Center"
+                            Text="{x:Static resx:ResUI.TbSettingsSendDeviceModel}" />
+                        <ToggleSwitch
+                            x:Name="togSendDeviceModel"
+                            Grid.Row="30"
+                            Grid.Column="1"
+                            Margin="{StaticResource Margin4}"
+                            HorizontalAlignment="Left" />
                     </Grid>
                 </ScrollViewer>
             </TabItem>

@@ -1899,4 +1899,25 @@ The "Get Certificate" action may fail if a self-signed certificate is used or if
   <data name="TbSortingProcess" xml:space="preserve">
     <value>Process</value>
   </data>
+  <data name="MsgHwidRequired" xml:space="preserve">
+    <value>Subscription rejected: Server requires HWID device identification (X-HWID).</value>
+  </data>
+  <data name="MsgHwidMaxDevicesReached" xml:space="preserve">
+    <value>Subscription rejected: Maximum device limit reached on provider panel.</value>
+  </data>
+  <data name="TbSettingsEnableHwid" xml:space="preserve">
+    <value>Enable HWID for subscription requests</value>
+  </data>
+  <data name="TbSettingsHwid" xml:space="preserve">
+    <value>Client HWID</value>
+  </data>
+  <data name="TbSettingsSendDeviceModel" xml:space="preserve">
+    <value>Send device model with HWID</value>
+  </data>
+  <data name="TbRegenerateHwid" xml:space="preserve">
+    <value>Generate new HWID</value>
+  </data>
+  <data name="TbSettingsHwidTips" xml:space="preserve">
+    <value>Unique persistent installation identifier sent to subscription providers requiring device binding.</value>
+  </data>
 </root>

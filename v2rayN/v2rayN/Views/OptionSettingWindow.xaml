@@ -768,6 +768,9 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
@@ -1186,6 +1189,68 @@
                             Style="{StaticResource ToolbarTextBlock}"
                             Text="{x:Static resx:ResUI.TbSettingsChinaUserTip}"
                             TextWrapping="Wrap" />
+
+                        <TextBlock
+                            Grid.Row="28"
+                            Grid.Column="0"
+                            Margin="{StaticResource Margin8}"
+                            VerticalAlignment="Center"
+                            Style="{StaticResource ToolbarTextBlock}"
+                            Text="{x:Static resx:ResUI.TbSettingsEnableHwid}" />
+                        <ToggleButton
+                            x:Name="togEnableHwid"
+                            Grid.Row="28"
+                            Grid.Column="1"
+                            Margin="{StaticResource Margin8}"
+                            HorizontalAlignment="Left" />
+
+                        <TextBlock
+                            Grid.Row="29"
+                            Grid.Column="0"
+                            Margin="{StaticResource Margin8}"
+                            VerticalAlignment="Center"
+                            Style="{StaticResource ToolbarTextBlock}"
+                            Text="{x:Static resx:ResUI.TbSettingsHwid}" />
+                        <StackPanel
+                            Grid.Row="29"
+                            Grid.Column="1"
+                            Orientation="Horizontal"
+                            Margin="{StaticResource Margin8}">
+                            <TextBox
+                                x:Name="txtHwid"
+                                Width="280"
+                                Margin="{StaticResource MarginLeftRight4}"
+                                VerticalAlignment="Center"
+                                Style="{StaticResource DefTextBox}" />
+                            <Button
+                                x:Name="btnRegenerateHwid"
+                                Margin="{StaticResource MarginLeftRight4}"
+                                VerticalAlignment="Center"
+                                Content="{x:Static resx:ResUI.TbRegenerateHwid}"
+                                Style="{StaticResource DefButton}" />
+                        </StackPanel>
+                        <TextBlock
+                            Grid.Row="29"
+                            Grid.Column="2"
+                            Margin="{StaticResource Margin4}"
+                            VerticalAlignment="Center"
+                            Style="{StaticResource ToolbarTextBlock}"
+                            Text="{x:Static resx:ResUI.TbSettingsHwidTips}"
+                            TextWrapping="Wrap" />
+
+                        <TextBlock
+                            Grid.Row="30"
+                            Grid.Column="0"
+                            Margin="{StaticResource Margin8}"
+                            VerticalAlignment="Center"
+                            Style="{StaticResource ToolbarTextBlock}"
+                            Text="{x:Static resx:ResUI.TbSettingsSendDeviceModel}" />
+                        <ToggleButton
+                            x:Name="togSendDeviceModel"
+                            Grid.Row="30"
+                            Grid.Column="1"
+                            Margin="{StaticResource Margin8}"
+                            HorizontalAlignment="Left" />
                     </Grid>
                 </ScrollViewer>
             </TabItem>

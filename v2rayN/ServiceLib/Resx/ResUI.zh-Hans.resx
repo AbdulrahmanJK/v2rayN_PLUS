@@ -1891,4 +1891,25 @@
   <data name="TbSortingProcess" xml:space="preserve">
     <value>进程</value>
   </data>
+  <data name="MsgHwidRequired" xml:space="preserve">
+    <value>订阅请求被拒绝：服务器要求 HWID 设备标识 (X-HWID)。</value>
+  </data>
+  <data name="MsgHwidMaxDevicesReached" xml:space="preserve">
+    <value>订阅请求被拒绝：已达到服务商面板设置的最大设备数限制。</value>
+  </data>
+  <data name="TbSettingsEnableHwid" xml:space="preserve">
+    <value>启用订阅请求的 HWID 设备标识</value>
+  </data>
+  <data name="TbSettingsHwid" xml:space="preserve">
+    <value>客户端 HWID</value>
+  </data>
+  <data name="TbSettingsSendDeviceModel" xml:space="preserve">
+    <value>随 HWID 一同发送设备型号</value>
+  </data>
+  <data name="TbRegenerateHwid" xml:space="preserve">
+    <value>生成新 HWID</value>
+  </data>
+  <data name="TbSettingsHwidTips" xml:space="preserve">
+    <value>用于需要设备绑定的订阅服务商的唯一持久安装标识符。</value>
+  </data>
 </root>

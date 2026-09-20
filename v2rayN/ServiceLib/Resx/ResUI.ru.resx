@@ -1899,4 +1899,25 @@
   <data name="TbSortingProcess" xml:space="preserve">
     <value>Процесс</value>
   </data>
+  <data name="MsgHwidRequired" xml:space="preserve">
+    <value>Запрос подписки отклонен: сервер требует идентификатор устройства (X-HWID).</value>
+  </data>
+  <data name="MsgHwidMaxDevicesReached" xml:space="preserve">
+    <value>Запрос подписки отклонен: исчерпан лимит устройств на панели провайдера.</value>
+  </data>
+  <data name="TbSettingsEnableHwid" xml:space="preserve">
+    <value>Включить отправку HWID при обновлении подписок</value>
+  </data>
+  <data name="TbSettingsHwid" xml:space="preserve">
+    <value>HWID клиента</value>
+  </data>
+  <data name="TbSettingsSendDeviceModel" xml:space="preserve">
+    <value>Отправлять модель устройства вместе с HWID</value>
+  </data>
+  <data name="TbRegenerateHwid" xml:space="preserve">
+    <value>Сгенерировать новый HWID</value>
+  </data>
+  <data name="TbSettingsHwidTips" xml:space="preserve">
+    <value>Уникальный постоянный идентификатор установки для провайдеров подписок, требующих привязку устройств.</value>
+  </data>
 </root>

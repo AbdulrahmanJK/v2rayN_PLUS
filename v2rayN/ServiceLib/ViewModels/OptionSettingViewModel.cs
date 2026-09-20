@@ -66,6 +66,9 @@ public partial class OptionSettingViewModel : MyReactiveObject, ICloseable
     [Reactive] public partial string RoutingRulesSourceUrl { get; set; }
     [Reactive] public partial string IPAPIUrl { get; set; }
     [Reactive] public partial string RootCertProvider { get; set; }
+    [Reactive] public partial bool EnableHwid { get; set; }
+    [Reactive] public partial string Hwid { get; set; }
+    [Reactive] public partial bool SendDeviceModel { get; set; }
 
     #endregion UI
 
@@ -117,6 +120,7 @@ public partial class OptionSettingViewModel : MyReactiveObject, ICloseable
     #endregion CoreType
 
     public ReactiveCommand<RxVoid, RxVoid> SaveCmd { get; }
+    public ReactiveCommand<RxVoid, RxVoid> RegenerateHwidCmd { get; }
 
     public OptionSettingViewModel()
     {
@@ -129,6 +133,10 @@ public partial class OptionSettingViewModel : MyReactiveObject, ICloseable
         SaveCmd = ReactiveCommand.CreateFromTask(async () =>
         {
             await SaveSettingAsync();
+        });
+        RegenerateHwidCmd = ReactiveCommand.Create(() =>
+        {
+            Hwid = HwidHelper.GenerateHappHwid();
         });
 
         _ = Init();
@@ -199,6 +207,9 @@ public partial class OptionSettingViewModel : MyReactiveObject, ICloseable
         RoutingRulesSourceUrl = _config.ConstItem.RouteRulesTemplateSourceUrl;
         IPAPIUrl = _config.SpeedTestItem.IPAPIUrl;
         RootCertProvider = _config.GuiItem.RootCertProvider;
+        EnableHwid = _config.GuiItem.EnableHwid;
+        Hwid = _config.GuiItem.Hwid.IsNullOrEmpty() ? HwidHelper.GenerateHappHwid() : _config.GuiItem.Hwid;
+        SendDeviceModel = _config.GuiItem.SendDeviceModel;
 
         #endregion UI
 
@@ -374,6 +385,9 @@ public partial class OptionSettingViewModel : MyReactiveObject, ICloseable
         _config.ConstItem.RouteRulesTemplateSourceUrl = RoutingRulesSourceUrl;
         _config.SpeedTestItem.IPAPIUrl = IPAPIUrl;
         _config.GuiItem.RootCertProvider = RootCertProvider;
+        _config.GuiItem.EnableHwid = EnableHwid;
+        _config.GuiItem.Hwid = Hwid.IsNullOrEmpty() ? HwidHelper.GenerateHappHwid() : Hwid.Trim();
+        _config.GuiItem.SendDeviceModel = SendDeviceModel;
 
         //systemProxy
         _config.SystemProxyItem.SystemProxyExceptions = SystemProxyExceptions;

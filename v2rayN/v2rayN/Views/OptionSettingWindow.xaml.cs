@@ -116,6 +116,10 @@ public partial class OptionSettingWindow
             this.Bind(ViewModel, vm => vm.RoutingRulesSourceUrl, v => v.cmbRoutingRulesSourceUrl.Text).DisposeWith(disposables);
             this.Bind(ViewModel, vm => vm.IPAPIUrl, v => v.cmbIPAPIUrl.Text).DisposeWith(disposables);
             this.Bind(ViewModel, vm => vm.RootCertProvider, v => v.cmbRootCertificateProvider.Text).DisposeWith(disposables);
+            this.Bind(ViewModel, vm => vm.EnableHwid, v => v.togEnableHwid.IsChecked).DisposeWith(disposables);
+            this.Bind(ViewModel, vm => vm.Hwid, v => v.txtHwid.Text).DisposeWith(disposables);
+            this.Bind(ViewModel, vm => vm.SendDeviceModel, v => v.togSendDeviceModel.IsChecked).DisposeWith(disposables);
+            this.BindCommand(ViewModel, vm => vm.RegenerateHwidCmd, v => v.btnRegenerateHwid).DisposeWith(disposables);
 
             this.Bind(ViewModel, vm => vm.NotProxyLocalAddress, v => v.tognotProxyLocalAddress.IsChecked).DisposeWith(disposables);
             this.Bind(ViewModel, vm => vm.SystemProxyAdvancedProtocol, v => v.cmbsystemProxyAdvancedProtocol.Text).DisposeWith(disposables);

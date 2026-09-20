@@ -1900,4 +1900,25 @@
   <data name="TbSortingProcess" xml:space="preserve">
     <value>行程</value>
   </data>
+  <data name="MsgHwidRequired" xml:space="preserve">
+    <value>訂閱請求被拒絕：伺服器要求 HWID 裝置識別 (X-HWID)。</value>
+  </data>
+  <data name="MsgHwidMaxDevicesReached" xml:space="preserve">
+    <value>訂閱請求被拒絕：已達到服務商面板設定的最大裝置數限制。</value>
+  </data>
+  <data name="TbSettingsEnableHwid" xml:space="preserve">
+    <value>啟用訂閱請求的 HWID 裝置識別</value>
+  </data>
+  <data name="TbSettingsHwid" xml:space="preserve">
+    <value>用戶端 HWID</value>
+  </data>
+  <data name="TbSettingsSendDeviceModel" xml:space="preserve">
+    <value>隨 HWID 一同發送裝置型號</value>
+  </data>
+  <data name="TbRegenerateHwid" xml:space="preserve">
+    <value>產生新 HWID</value>
+  </data>
+  <data name="TbSettingsHwidTips" xml:space="preserve">
+    <value>用於需要裝置綁定的訂閱服務商的唯一持久安裝識別碼。</value>
+  </data>
 </root>
