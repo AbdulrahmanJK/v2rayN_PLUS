@@ -117,6 +117,18 @@ public static class ConfigHandler
         }
 
         config.ConstItem ??= new ConstItem();
+        if (config.ConstItem.GeoSourceUrl.IsNullOrEmpty())
+        {
+            config.ConstItem.GeoSourceUrl = Global.GeoFilesSources[1];
+        }
+        if (config.ConstItem.SrsSourceUrl.IsNullOrEmpty())
+        {
+            config.ConstItem.SrsSourceUrl = Global.SingboxRulesetSources[1];
+        }
+        if (config.ConstItem.RouteRulesTemplateSourceUrl.IsNullOrEmpty())
+        {
+            config.ConstItem.RouteRulesTemplateSourceUrl = Global.RoutingRulesSources[1];
+        }
 
         config.SimpleDNSItem ??= InitBuiltinSimpleDNS();
         config.SimpleDNSItem.BlockAAAAQuery ??= false;
@@ -2603,8 +2615,8 @@ public static class ConfigHandler
 
             await AddBatchRoutingRules(item, ruleSetsString);
 
-            //first rule as default at first startup
-            if (!blImportAdvancedRules && i == 0)
+            //first rule as default at first startup (prefer "Всё, кроме РФ")
+            if (!blImportAdvancedRules && (item.Remarks.Contains("кроме РФ") || (i == 0 && !template.RoutingItems.Any(r => r.Remarks.Contains("кроме РФ")))))
             {
                 await SetDefaultRouting(config, item);
             }
@@ -2635,6 +2647,37 @@ public static class ConfigHandler
 
         if (!blImportAdvancedRules && items.Count() > 0) // items.Count(u => u.Remarks.StartsWith(ver)) > 0)
         {
+            // If RU rules are missing, automatically add them!
+            if (!items.Any(t => t.Remarks != null && (t.Remarks.StartsWith("RUv1") || t.Remarks.Contains("кроме РФ"))))
+            {
+                var sort = items.Max(t => t.Sort);
+                var itRuBypass = new RoutingItem()
+                {
+                    Remarks = "RUv1-Всё, кроме РФ",
+                    Url = string.Empty,
+                    DomainStrategy = "IPOnDemand",
+                    Sort = ++sort,
+                };
+                await AddBatchRoutingRules(itRuBypass, EmbedUtils.GetEmbedText(Global.CustomRoutingFileName + "ru_bypass"));
+
+                var itRuBlocked = new RoutingItem()
+                {
+                    Remarks = "RUv1-Заблокированное",
+                    Url = string.Empty,
+                    DomainStrategy = "IPOnDemand",
+                    Sort = ++sort,
+                };
+                await AddBatchRoutingRules(itRuBlocked, EmbedUtils.GetEmbedText(Global.CustomRoutingFileName + "ru_blocked"));
+
+                var itRuAll = new RoutingItem()
+                {
+                    Remarks = "RUv1-Всё",
+                    Url = string.Empty,
+                    Sort = ++sort,
+                };
+                await AddBatchRoutingRules(itRuAll, EmbedUtils.GetEmbedText(Global.CustomRoutingFileName + "ru_all"));
+            }
+
             //migrate
             //TODO Temporary code to be removed later
             if (config.RoutingBasicItem.RoutingIndexId.IsNotEmpty())
@@ -2651,12 +2694,42 @@ public static class ConfigHandler
         }
 
         var maxSort = items.Count;
+
+        // RUv1-Всё, кроме РФ (Official runetfreedom all_except_ru)
+        var itemRuBypass = new RoutingItem()
+        {
+            Remarks = "RUv1-Всё, кроме РФ",
+            Url = string.Empty,
+            DomainStrategy = "IPOnDemand",
+            Sort = ++maxSort,
+        };
+        await AddBatchRoutingRules(itemRuBypass, EmbedUtils.GetEmbedText(Global.CustomRoutingFileName + "ru_bypass"));
+
+        // RUv1-Заблокированное (Official runetfreedom only_blocked)
+        var itemRuBlocked = new RoutingItem()
+        {
+            Remarks = "RUv1-Заблокированное",
+            Url = string.Empty,
+            DomainStrategy = "IPOnDemand",
+            Sort = ++maxSort,
+        };
+        await AddBatchRoutingRules(itemRuBlocked, EmbedUtils.GetEmbedText(Global.CustomRoutingFileName + "ru_blocked"));
+
+        // RUv1-Всё (Official runetfreedom all)
+        var itemRuAll = new RoutingItem()
+        {
+            Remarks = "RUv1-Всё",
+            Url = string.Empty,
+            Sort = ++maxSort,
+        };
+        await AddBatchRoutingRules(itemRuAll, EmbedUtils.GetEmbedText(Global.CustomRoutingFileName + "ru_all"));
+
         //Bypass the mainland
         var item2 = new RoutingItem()
         {
             Remarks = $"{ver}绕过大陆(Whitelist)",
             Url = string.Empty,
-            Sort = maxSort + 1,
+            Sort = ++maxSort,
         };
         await AddBatchRoutingRules(item2, EmbedUtils.GetEmbedText(Global.CustomRoutingFileName + "white"));
 
@@ -2665,7 +2738,7 @@ public static class ConfigHandler
         {
             Remarks = $"{ver}黑名单(Blacklist)",
             Url = string.Empty,
-            Sort = maxSort + 2,
+            Sort = ++maxSort,
         };
         await AddBatchRoutingRules(item3, EmbedUtils.GetEmbedText(Global.CustomRoutingFileName + "black"));
 
@@ -2674,13 +2747,13 @@ public static class ConfigHandler
         {
             Remarks = $"{ver}全局(Global)",
             Url = string.Empty,
-            Sort = maxSort + 3,
+            Sort = ++maxSort,
         };
         await AddBatchRoutingRules(item1, EmbedUtils.GetEmbedText(Global.CustomRoutingFileName + "global"));
 
         if (!blImportAdvancedRules)
         {
-            await SetDefaultRouting(config, item2);
+            await SetDefaultRouting(config, itemRuBypass);
         }
         return 0;
     }

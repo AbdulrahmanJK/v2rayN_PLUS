@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<OutputType>Library</OutputType>
@@ -32,6 +32,9 @@
 		<EmbeddedResource Include="Sample\custom_routing_black" />
 		<EmbeddedResource Include="Sample\custom_routing_global" />
 		<EmbeddedResource Include="Sample\custom_routing_white" />
+		<EmbeddedResource Include="Sample\custom_routing_ru_bypass" />
+		<EmbeddedResource Include="Sample\custom_routing_ru_blocked" />
+		<EmbeddedResource Include="Sample\custom_routing_ru_all" />
 		<EmbeddedResource Include="Sample\dns_singbox_normal" />
 		<EmbeddedResource Include="Sample\dns_v2ray_normal" />
 		<EmbeddedResource Include="Sample\kill_as_sudo_linux_sh" />

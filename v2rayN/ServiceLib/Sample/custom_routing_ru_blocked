@@ -1,0 +1,74 @@
+[
+  {
+    "outboundTag": "direct",
+    "protocol": [
+      "bittorrent"
+    ],
+    "enabled": true,
+    "remarks": "Торрент напрямую"
+  },
+  {
+    "outboundTag": "block",
+    "domain": [
+      "geosite:category-ads-all"
+    ],
+    "enabled": true,
+    "remarks": "Блокировка рекламы"
+  },
+  {
+    "outboundTag": "direct",
+    "ip": [
+      "geoip:private"
+    ],
+    "enabled": true,
+    "remarks": "Приватные сети напрямую"
+  },
+  {
+    "outboundTag": "direct",
+    "domain": [
+      "geosite:private"
+    ],
+    "enabled": true,
+    "remarks": "Приватные домены напрямую"
+  },
+  {
+    "outboundTag": "proxy",
+    "ip": [
+      "1.0.0.1",
+      "1.1.1.1",
+      "8.8.8.8",
+      "8.8.4.4"
+    ],
+    "enabled": true,
+    "remarks": "DNS в прокси"
+  },
+  {
+    "port": "50000-65535",
+    "network": "udp",
+    "outboundTag": "proxy",
+    "enabled": true,
+    "remarks": "Дискорд (войс) в прокси"
+  },
+  {
+    "outboundTag": "proxy",
+    "ip": [
+      "geoip:ru-blocked"
+    ],
+    "enabled": true,
+    "remarks": "Заблокированные сети в прокси"
+  },
+  {
+    "outboundTag": "proxy",
+    "domain": [
+      "geosite:ru-blocked"
+    ],
+    "enabled": true,
+    "remarks": "Заблокированные домены в прокси"
+  },
+  {
+    "port": "0-65535",
+    "outboundTag": "direct",
+    "enabled": true,
+    "remarks": "Остальное напрямую"
+  }
+]
