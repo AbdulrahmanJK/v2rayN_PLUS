@@ -482,7 +482,13 @@ public partial class CoreConfigSingboxService
                     // sing-box strictly matches the exe suffix on Windows
                     var procName = Utils.GetExeName(process);
 
-                    ruleProcName.process_name.Add(procName);
+                    foreach (var expanded in ExpandProcessNamesForPlatform(procName))
+                    {
+                        if (!ruleProcName.process_name.Contains(expanded, StringComparer.OrdinalIgnoreCase))
+                        {
+                            ruleProcName.process_name.Add(expanded);
+                        }
+                    }
                 }
 
                 if (ruleProcName.process_name.Count > 0)
@@ -605,5 +611,85 @@ public partial class CoreConfigSingboxService
         FillRangeProxy(proxyOutbounds, _coreConfig, false);
 
         return tag;
+    }
+
+    public static IEnumerable<string> ExpandProcessNamesForPlatform(string procName)
+    {
+        if (procName.IsNullOrEmpty())
+        {
+            yield break;
+        }
+
+        yield return procName;
+
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+        {
+            var baseName = Path.GetFileName(procName);
+            if (baseName.EndsWith(".app", StringComparison.OrdinalIgnoreCase))
+            {
+                baseName = baseName[..^4];
+            }
+            else if (baseName.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
+            {
+                baseName = baseName[..^4];
+            }
+
+            if (baseName.IsNotEmpty() && !string.Equals(baseName, procName, StringComparison.OrdinalIgnoreCase))
+            {
+                yield return baseName;
+            }
+
+            var lower = baseName.ToLowerInvariant();
+            if (lower is "google chrome" or "chrome" or "google-chrome")
+            {
+                yield return "Google Chrome";
+                yield return "Google Chrome Helper";
+                yield return "Google Chrome Helper (Renderer)";
+                yield return "Google Chrome Helper (GPU)";
+                yield return "Google Chrome Helper (Plugin)";
+                yield return "Google Chrome Helper (Alerts)";
+                yield return "chrome";
+            }
+            else if (lower is "zen" or "zen browser" or "zen-bin" or "zen-browser")
+            {
+                yield return "zen";
+                yield return "Zen Browser";
+                yield return "zen-bin";
+                yield return "plugin-container";
+                yield return "Zen GPU Helper";
+                yield return "XUL";
+            }
+            else if (lower is "firefox" or "firefox-bin")
+            {
+                yield return "firefox";
+                yield return "plugin-container";
+            }
+            else if (lower.Contains("brave"))
+            {
+                yield return "Brave Browser";
+                yield return "Brave Browser Helper";
+                yield return "Brave Browser Helper (Renderer)";
+                yield return "Brave Browser Helper (GPU)";
+            }
+            else if (lower.Contains("edge"))
+            {
+                yield return "Microsoft Edge";
+                yield return "Microsoft Edge Helper";
+                yield return "Microsoft Edge Helper (Renderer)";
+                yield return "Microsoft Edge Helper (GPU)";
+            }
+            else if (lower.Contains("arc"))
+            {
+                yield return "Arc";
+                yield return "Arc Helper";
+                yield return "Arc Helper (Renderer)";
+                yield return "Arc Helper (GPU)";
+            }
+            else if (lower.Contains("yandex"))
+            {
+                yield return "Yandex";
+                yield return "Yandex Helper";
+            }
+        }
     }
 }
