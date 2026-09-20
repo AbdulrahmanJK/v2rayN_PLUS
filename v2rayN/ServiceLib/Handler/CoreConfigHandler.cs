@@ -68,8 +68,42 @@ public static class CoreConfigHandler
                 ret.Msg = ResUI.FailedGenDefaultConfiguration;
                 return ret;
             }
-            File.Copy(addressFileName, fileName);
-            File.SetAttributes(fileName, FileAttributes.Normal); //Copy will keep the attributes of addressFileName, so we need to add write permissions to fileName just in case of addressFileName is a read-only file.
+            var content = await File.ReadAllTextAsync(addressFileName);
+            var config = AppManager.Instance.Config;
+            var localPort = (node.PreSocksPort is > 0 and <= 65535)
+                ? node.PreSocksPort.Value
+                : (config.Inbound?.FirstOrDefault()?.LocalPort ?? AppManager.Instance.GetLocalPort(EInboundProtocol.socks));
+            if (localPort > 0)
+            {
+                try
+                {
+                    var nodeObj = JsonNode.Parse(content);
+                    if (nodeObj?["inbounds"] is JsonArray inbounds)
+                    {
+                        var httpPort = localPort + 1;
+                        foreach (var item in inbounds)
+                        {
+                            var tag = item?["tag"]?.ToString();
+                            var proto = item?["protocol"]?.ToString();
+                            var p = item?["port"]?.GetValue<int>() ?? 0;
+                            if (proto == "socks" || tag == "socks" || p == 10808)
+                            {
+                                item!["port"] = localPort;
+                            }
+                            else if (proto == "http" || tag == "http" || p == 10809)
+                            {
+                                item!["port"] = httpPort;
+                            }
+                        }
+                        content = nodeObj.ToJsonString(new JsonSerializerOptions { WriteIndented = true });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logging.SaveLog(_tag, ex);
+                }
+            }
+            await File.WriteAllTextAsync(fileName, content);
 
             //check again
             if (!File.Exists(fileName))
@@ -80,7 +114,7 @@ public static class CoreConfigHandler
 
             ret.Msg = string.Format(ResUI.SuccessfulConfiguration, "");
             ret.Success = true;
-            return await Task.FromResult(ret);
+            return ret;
         }
         catch (Exception ex)
         {

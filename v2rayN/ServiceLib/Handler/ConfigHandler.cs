@@ -1572,18 +1572,35 @@ public static class ConfigHandler
                 Port = AppManager.Instance.GetLocalPort(EInboundProtocol.socks)
             };
         }
-        else if (node.ConfigType == EConfigType.Custom
-            && node.PreSocksPort is > 0 and <= 65535)
+        else if (node.ConfigType == EConfigType.Custom)
         {
-            var customPreCoreType = AppManager.Instance.GetCoreType(null, EConfigType.Custom);
-            var preCoreType = (enableLegacyProtect && config.TunModeItem.EnableTun) ? ECoreType.sing_box : customPreCoreType;
-            itemSocks = new ProfileItem()
+            if (node.PreSocksPort is > 0 and <= 65535)
             {
-                CoreType = preCoreType,
-                ConfigType = EConfigType.SOCKS,
-                Address = Global.Loopback,
-                Port = node.PreSocksPort.Value,
-            };
+                var customPreCoreType = AppManager.Instance.GetCoreType(null, EConfigType.Custom);
+                var preCoreType = (enableLegacyProtect && config.TunModeItem.EnableTun) ? ECoreType.sing_box : customPreCoreType;
+                itemSocks = new ProfileItem()
+                {
+                    CoreType = preCoreType,
+                    ConfigType = EConfigType.SOCKS,
+                    Address = Global.Loopback,
+                    Port = node.PreSocksPort.Value,
+                };
+            }
+            else if (config.TunModeItem.EnableTun && enableLegacyProtect)
+            {
+                var localPort = config.Inbound?.FirstOrDefault(i => i.LocalPort > 0)?.LocalPort ?? AppManager.Instance.GetLocalPort(EInboundProtocol.socks);
+                if (localPort <= 0)
+                {
+                    localPort = 10808;
+                }
+                itemSocks = new ProfileItem()
+                {
+                    CoreType = ECoreType.sing_box,
+                    ConfigType = EConfigType.SOCKS,
+                    Address = Global.Loopback,
+                    Port = localPort,
+                };
+            }
         }
         return itemSocks;
     }
